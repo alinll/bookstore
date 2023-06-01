@@ -10,19 +10,15 @@ namespace bookstore
 {
     public class Place
     {
-        private string region;
-        private string city;
-        private int department;
-
-        public string Region { get { return region; } set { region = value; } }
-        public string City { get { return city; } set { city = value; } }
-        public int Department { get { return department; } set { department = value; } }
+        public string Region { get; set; }
+        public string City { get; set; }
+        public int Department { get; set; }
 
         public Place(string region, string city, int department)
         {
-            this.region = region;
-            this.city = city;
-            this.department = department;
+            this.Region = region;
+            this.City = city;
+            this.Department = department;
         }
 
         public static void EnterPlace(List<Place> place)

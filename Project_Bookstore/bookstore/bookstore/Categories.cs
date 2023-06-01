@@ -8,12 +8,11 @@ namespace bookstore
 {
     internal class Categories : Book
     {
-        private string category;
-        public string Category { get { return category; } set { category = value; } }
+        public string Category { get; set; }
         public Categories(string id, string name, double price, string author_first_name, string author_last_name,
             string category, int count) : base(id, name, price, author_first_name, author_last_name, count)
         {
-            this.category = category;
+            this.Category = category;
         }
 
         private static List<string> showedCategories = new List<string>();

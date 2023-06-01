@@ -11,13 +11,12 @@ namespace bookstore
 {
     internal class Shopping_Cart : Book
     {
-        private int quantity;
-        public int Quantity { get { return quantity; } set { quantity = value; } }
+        public int Quantity { get; set; }
         public User User { get; set; }
         public Shopping_Cart(string id, string name, double price, string author_first_name, string author_last_name, int count,
             int quantity) : base(id, name, price, author_first_name, author_last_name, count)
         {
-            this.quantity = quantity;
+            this.Quantity = quantity;
         }
 
         public static void AddToShoppingCart(List<Book> books, List<Shopping_Cart> shopping_cart)
@@ -294,7 +293,7 @@ namespace bookstore
         public override void Show()
         {
             Console.WriteLine($"Name of the book: {Name}\nAuthor: {Author_First_Name} {Author_Last_Name}\nPrice: {Price}\n" +
-                $"Quantity: {quantity}");
+                $"Quantity: {Quantity}");
         }
     }
 }

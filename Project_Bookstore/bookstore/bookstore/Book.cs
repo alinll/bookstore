@@ -6,30 +6,24 @@ using System.Threading.Tasks;
 
 namespace bookstore
 {
+
     internal class Book : IComparable<Book>
     {
-        private string id;
-        private string name;
-        private double price;
-        private string author_first_name;
-        private string author_last_name;
-        private int count;
-
-        public string Id { get { return id; } set { id = value; } }
-        public string Name { get { return name; } set { name = value; } }
-        public double Price { get { return price; } set { price = value; } }
-        public string Author_First_Name { get { return author_first_name; } set { author_first_name = value; } }
-        public string Author_Last_Name { get { return author_last_name; } set { author_last_name = value; } }
-        public int Count { get { return count; } set { count = value; } }
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public double Price { get; set; }
+        public string Author_First_Name { get; set; }
+        public string Author_Last_Name { get; set; }
+        public int Count { get; set; }
 
         public Book(string id, string name, double price, string author_first_name, string author_last_name, int count)
         {
-            this.id = id;
-            this.name = name;
-            this.price = price;
-            this.author_first_name = author_first_name;
-            this.author_last_name = author_last_name;
-            this.count = count;
+            this.Id = id;
+            this.Name = name;
+            this.Price = price;
+            this.Author_First_Name = author_first_name;
+            this.Author_Last_Name = author_last_name;
+            this.Count = count;
         }
 
         public int CompareTo(Book? other)
@@ -105,13 +99,14 @@ namespace bookstore
 
         public static void AddBook(List<Book> books, Book book)
         {
+
             bool bookExists = false;
 
             foreach (Book b in books)
             {
-                if (b.id == book.id)
+                if (b.Id == book.Id)
                 {
-                    b.count += book.count;
+                    b.Count += book.Count;
                     bookExists = true;
                     break;
                 }

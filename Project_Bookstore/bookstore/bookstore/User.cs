@@ -9,30 +9,21 @@ namespace bookstore
 {
     public class User
     {
-        private string name;
-        private string phone_number;
-        private string email;
-        private string password;
-
-        public string Name { get { return name; } set { name = value; } }
-        public string Phone_number { get { return phone_number; } set { phone_number = value; } }
-        public string Email { get { return email; } set { email = value; } }
-        public string Password { get { return password; } set { password = value; } }
+        public string Name { get; set; }
+        public string Phone_number { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
 
         public User()
         {
-            this.name = name;
-            this.phone_number = phone_number;
-            this.email = email;
-            this.password = password;
         }
 
         public User(string name, string phone_number, string email, string password)
         {
-            this.name = name;
-            this.phone_number = phone_number;
-            this.email = email;
-            this.password = password;
+            this.Name = name;
+            this.Phone_number = phone_number;
+            this.Email = email;
+            this.Password = password;
         }
 
         public void Registration(List<User> users)
@@ -44,9 +35,9 @@ namespace bookstore
                 try
                 {
                     Console.Write("\nEnter your name: ");
-                    name = Console.ReadLine();
+                    Name = Console.ReadLine();
                     regex = new Regex(@"^[A-Z][a-z]{2,}$");
-                    isValid = regex.IsMatch(name);
+                    isValid = regex.IsMatch(Name);
 
                     if (!isValid)
                     {
@@ -65,20 +56,20 @@ namespace bookstore
                 try
                 {
                     Console.Write("Enter your phone number: ");
-                    phone_number = Console.ReadLine();
+                    Phone_number = Console.ReadLine();
 
-                    if (phone_number.StartsWith("0"))
+                    if (Phone_number.StartsWith("0"))
                     {
-                        phone_number = "+38" + phone_number;
+                        Phone_number = "+38" + Phone_number;
                     }
 
-                    if (users.Any(user => user.Phone_number.Equals(phone_number, StringComparison.OrdinalIgnoreCase)))
+                    if (users.Any(user => user.Phone_number.Equals(Phone_number, StringComparison.OrdinalIgnoreCase)))
                     {
                         throw new Exception("This phone number already registered");
                     }
 
                     regex = new Regex(@"^(?:\+380|0)\d{9}$");
-                    isValid = regex.IsMatch(phone_number);
+                    isValid = regex.IsMatch(Phone_number);
                     if (!isValid)
                     {
                         throw new Exception("You enter incorrect phone number. Enter again:");
@@ -96,15 +87,15 @@ namespace bookstore
                 try
                 {
                     Console.Write("Enter your Email: ");
-                    email = Console.ReadLine();
+                    Email = Console.ReadLine();
 
-                    if (users.Any(user => user.Email.Equals(email, StringComparison.OrdinalIgnoreCase)))
+                    if (users.Any(user => user.Email.Equals(Email, StringComparison.OrdinalIgnoreCase)))
                     {
                         throw new Exception("This email already registered");
                     }
 
                     regex = new Regex(@"^.+@+[a-z]{2,}\.[a-z]{2,}(\.[a-z]{2,})?$");
-                    isValid = regex.IsMatch(email);
+                    isValid = regex.IsMatch(Email);
                     if (!isValid)
                     {
                         throw new Exception("You enter incorrect Email. Enter again:");
@@ -122,8 +113,8 @@ namespace bookstore
                 try
                 {
                     Console.Write("Enter your password: ");
-                    password = Console.ReadLine();
-                    if (password.Length < 6)
+                    Password = Console.ReadLine();
+                    if (Password.Length < 6)
                     {
                         throw new Exception("Password must have least 6 symbols. Enter again:");
                     }

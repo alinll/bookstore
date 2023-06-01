@@ -1,4 +1,6 @@
-﻿using System.Reflection.Metadata;
+﻿using System.IO;
+using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
 
 namespace bookstore
 {
