@@ -13,8 +13,8 @@ namespace bookstore
     {
         public int Quantity { get; set; }
         public User User { get; set; }
-        public Shopping_Cart(string id, string name, double price, string author_first_name, string author_last_name, int count,
-            int quantity) : base(id, name, price, author_first_name, author_last_name, count)
+        public Shopping_Cart(string id, string name, double price, string author_first_name, string author_last_name, 
+            string category, int count, int quantity) : base(id, name, price, author_first_name, author_last_name, category, count)
         {
             this.Quantity = quantity;
         }
@@ -59,7 +59,7 @@ namespace bookstore
                                 {
                                     Shopping_Cart cartItem = new Shopping_Cart(selectedBook.Id, selectedBook.Name,
                                         selectedBook.Price, selectedBook.Author_First_Name, selectedBook.Author_Last_Name,
-                                        selectedBook.Count, quantity);
+                                        selectedBook.Category, selectedBook.Count, quantity);
                                     shopping_cart.Add(cartItem);
                                 }
                                 isValid = true;
@@ -126,7 +126,7 @@ namespace bookstore
                                         {
                                             Shopping_Cart cartItem = new Shopping_Cart(selectedBook.Id, selectedBook.Name,
                                                 selectedBook.Price, selectedBook.Author_First_Name, selectedBook.Author_Last_Name,
-                                                selectedBook.Count, quantity);
+                                                selectedBook.Category, selectedBook.Count, quantity);
                                             shopping_cart.Add(cartItem);
                                         }
                                         isValid = true;

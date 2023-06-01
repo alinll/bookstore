@@ -10,17 +10,17 @@ namespace bookstore
         {
             List<Book> books = new List<Book>
             {
-                new Categories("IM-00114320", "Pet Sematary", 326, "Stephen", "King", "Fiction", 7),
-                new Categories("IM-00002141", "The Shining", 399, "Stephen", "King", "Fiction", 8),
-                new Categories("IM-00001588", "Lord of the Flies", 281, "William", "Golding", "Fiction", 1),
-                new Categories("IM-00001730", "Complete Collection of Prose Works. Volume 1", 476, "H. P.", "Lovecraft",
+                new Book("IM-00114320", "Pet Sematary", 326, "Stephen", "King", "Fiction", 7),
+                new Book("IM-00002141", "The Shining", 399, "Stephen", "King", "Fiction", 8),
+                new Book("IM-00001588", "Lord of the Flies", 281, "William", "Golding", "Fiction", 1),
+                new Book("IM-00001730", "Complete Collection of Prose Works. Volume 1", 476, "H. P.", "Lovecraft",
                 "Fiction", 7),
-                new Categories("IM-00004889", "The Art of War", 224, "Sun", "Tzu", "Non-fiction", 17)
+                new Book("IM-00004889", "The Art of War", 224, "Sun", "Tzu", "Non-fiction", 17)
             };
-            Book newBook = new Categories("IL-00014572", "Murder on the Orient Express", 266, "Agatha", "Christie", "Fiction", 7);
+            Book newBook = new Book("IL-00014572", "Murder on the Orient Express", 266, "Agatha", "Christie", "Fiction", 7);
             Book.AddBook(books, newBook);
 
-            newBook = new Categories("IM-00114320", "Pet Sematary", 326, "Stephen", "King", "Fiction", 10);
+            newBook = new Book("IM-00114320", "Pet Sematary", 326, "Stephen", "King", "Fiction", 10);
             Book.AddBook(books, newBook);
 
             Console.WriteLine("All books:\n");
@@ -73,12 +73,12 @@ namespace bookstore
             }
 
             Console.WriteLine("\nCategories of books:\n");
-            Categories.ShowCategory(books);
+            Book.ShowCategory(books);
 
             Console.Write("Enter category for searching: ");
             string searchCategory = Console.ReadLine();
 
-            Categories.ChooseCategory(books, searchCategory);
+            Book.ChooseCategory(books, searchCategory);
             List<User> users = new List<User>();
             User user1 = new User();
 
