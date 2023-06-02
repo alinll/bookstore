@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace bookstore
 {
-    internal class Shopping_Cart : Book
+    internal class Cart_Item : Book
     {
         public int Quantity { get; set; }
         public User User { get; set; }
-        public Shopping_Cart(string id, string name, double price, string author_first_name, string author_last_name, 
+        public Cart_Item(string id, string name, double price, string author_first_name, string author_last_name, 
             string category, int count, int quantity) : base(id, name, price, author_first_name, author_last_name, category, count)
         {
             this.Quantity = quantity;
         }
 
-        public static void AddToShoppingCart(List<Book> books, List<Shopping_Cart> shopping_cart)
+        public static void AddToShoppingCart(List<Book> books, List<Cart_Item> shopping_cart)
         {
             Console.Write("Enter name of book, which you want to buy: ");
             string item = Console.ReadLine();
@@ -37,7 +37,7 @@ namespace bookstore
 
             if (selectedBook != null)
             {
-                Shopping_Cart existingCartItem = shopping_cart.FirstOrDefault(b => b.Name.Equals(item,
+                Cart_Item existingCartItem = shopping_cart.FirstOrDefault(b => b.Name.Equals(item,
                             StringComparison.OrdinalIgnoreCase));
                 int availableQuantity = selectedBook.Count - (existingCartItem?.Quantity ?? 0);
                 bool isValid = false;
@@ -57,7 +57,7 @@ namespace bookstore
                                 }
                                 else
                                 {
-                                    Shopping_Cart cartItem = new Shopping_Cart(selectedBook.Id, selectedBook.Name,
+                                    Cart_Item cartItem = new Cart_Item(selectedBook.Id, selectedBook.Name,
                                         selectedBook.Price, selectedBook.Author_First_Name, selectedBook.Author_Last_Name,
                                         selectedBook.Category, selectedBook.Count, quantity);
                                     shopping_cart.Add(cartItem);
@@ -104,7 +104,7 @@ namespace bookstore
 
                     if (selectedBook != null)
                     {
-                        Shopping_Cart existingCartItem = shopping_cart.FirstOrDefault(b => b.Name.Equals(item,
+                        Cart_Item existingCartItem = shopping_cart.FirstOrDefault(b => b.Name.Equals(item,
                                     StringComparison.OrdinalIgnoreCase));
                         int availableQuantity = selectedBook.Count - (existingCartItem?.Quantity ?? 0);
                         bool isValid = false;
@@ -124,7 +124,7 @@ namespace bookstore
                                         }
                                         else
                                         {
-                                            Shopping_Cart cartItem = new Shopping_Cart(selectedBook.Id, selectedBook.Name,
+                                            Cart_Item cartItem = new Cart_Item(selectedBook.Id, selectedBook.Name,
                                                 selectedBook.Price, selectedBook.Author_First_Name, selectedBook.Author_Last_Name,
                                                 selectedBook.Category, selectedBook.Count, quantity);
                                             shopping_cart.Add(cartItem);
@@ -151,10 +151,10 @@ namespace bookstore
             } while (choice.ToUpper() == "Y");
         }
 
-        public static void Calculate_total_price(List<Shopping_Cart> shopping_cart)
+        public static void Calculate_total_price(List<Cart_Item> shopping_cart)
         {
             double total_price = 0;
-            foreach(Shopping_Cart b in shopping_cart)
+            foreach(Cart_Item b in shopping_cart)
             {
                 double priceBook = b.Quantity * b.Price;
                 total_price += priceBook;
@@ -162,21 +162,21 @@ namespace bookstore
             Console.WriteLine($"Total price: {total_price}");
         }
 
-        public static void DeleteShoppingCart(List<Shopping_Cart> shopping_cart)
+        public static void DeleteShoppingCart(List<Cart_Item> shopping_cart)
         {
             if(shopping_cart.Count() > 0)
             {
                 Console.Write("\nEnter a name of book, which you want to delete: ");
                 string item = Console.ReadLine();
 
-                Shopping_Cart selectedBook = shopping_cart.FirstOrDefault(b => b.Name.Equals(item, 
+                Cart_Item selectedBook = shopping_cart.FirstOrDefault(b => b.Name.Equals(item, 
                     StringComparison.OrdinalIgnoreCase));
 
                 if (selectedBook != null)
                 {
                     shopping_cart.Remove(selectedBook);
                     Console.WriteLine("\nShopping cart:");
-                    foreach (Shopping_Cart b in shopping_cart)
+                    foreach (Cart_Item b in shopping_cart)
                     {
                         b.Show();
                         Console.WriteLine();
@@ -194,14 +194,14 @@ namespace bookstore
             }
         }
 
-        public static void ReduceCountShoppingCart(List<Shopping_Cart> shopping_cart)
+        public static void ReduceCountShoppingCart(List<Cart_Item> shopping_cart)
         {
             if(shopping_cart.Count() > 0)
             {
                 Console.Write("Enter a name of book, which count you want to reduce: ");
                 string item = Console.ReadLine();
 
-                Shopping_Cart selectedBook = shopping_cart.FirstOrDefault(b => b.Name.Equals(item, StringComparison.OrdinalIgnoreCase));
+                Cart_Item selectedBook = shopping_cart.FirstOrDefault(b => b.Name.Equals(item, StringComparison.OrdinalIgnoreCase));
 
                 if (selectedBook != null && selectedBook.Quantity > 1)
                 {
@@ -209,7 +209,7 @@ namespace bookstore
                     --selectedBook.Quantity;
 
                     Console.WriteLine("\nShopping cart:");
-                    foreach (Shopping_Cart b in shopping_cart)
+                    foreach (Cart_Item b in shopping_cart)
                     {
                         b.Show();
                         Console.WriteLine();
@@ -221,7 +221,7 @@ namespace bookstore
                     shopping_cart.Remove(selectedBook);
 
                     Console.WriteLine("\nShopping cart:");
-                    foreach (Shopping_Cart b in shopping_cart)
+                    foreach (Cart_Item b in shopping_cart)
                     {
                         b.Show();
                         Console.WriteLine();
@@ -239,7 +239,7 @@ namespace bookstore
             }
         }
 
-        public static void Buy(List<User> users, List<Place> place, List<Shopping_Cart> shopping_cart, List<Book> books)
+        public static void Buy(List<User> users, List<Place> place, List<Cart_Item> shopping_cart, List<Book> books)
         {
             try
             {
@@ -251,7 +251,7 @@ namespace bookstore
                 User.EnterAccount(users);
                 Place.EnterPlace(place);
 
-                foreach (Shopping_Cart item in shopping_cart)
+                foreach (Cart_Item item in shopping_cart)
                 {
                     Book book = books.FirstOrDefault(b => b.Id == item.Id);
                     if(book != null)
@@ -260,9 +260,9 @@ namespace bookstore
                     }
                 }
 
-                List<Shopping_Cart> boughtBooks = new List<Shopping_Cart>();
+                List<Cart_Item> boughtBooks = new List<Cart_Item>();
 
-                foreach (Shopping_Cart b in shopping_cart)
+                foreach (Cart_Item b in shopping_cart)
                 {
                     boughtBooks.Add(b);
                 }
@@ -277,11 +277,11 @@ namespace bookstore
             }
         }
 
-        public static void ShowCheck(List<Shopping_Cart> boughtBooks)
+        public static void ShowCheck(List<Cart_Item> boughtBooks)
         {
             Console.WriteLine("\nCheck");
             Console.WriteLine(DateTime.Now);
-            foreach (Shopping_Cart b in boughtBooks)
+            foreach (Cart_Item b in boughtBooks)
             {
                 b.Show();
                 Console.WriteLine();
