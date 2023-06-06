@@ -225,7 +225,7 @@ namespace bookstore
             }
         }
 
-        public void Buy(/*List<User> users, List<Place> place, */Storage storage)
+        public void Buy(Storage storage)
         {
             try
             {

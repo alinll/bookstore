@@ -103,8 +103,9 @@ namespace bookstore
             shopping_cart.DeleteShoppingCart();
             shopping_cart.ReduceCountShoppingCart();
 
-            List<Place> place = new List<Place>();
-            shopping_cart.Buy(/*users, place, */storage);
+            //List<Place> place = new List<Place>();
+
+            shopping_cart.Buy(storage);
 
             Console.WriteLine("\nAll books:\n");
             storage.Show();
