@@ -80,41 +80,34 @@ namespace bookstore
             string searchCategory = Console.ReadLine();
 
             storage.ChooseCategory(searchCategory);
-            List<User> users = new List<User>();
-            User user1 = new User();
 
-            user1.Registration(users);
-            users.Add(user1);
+            //List<User> users = new List<User>();
+            //User user1 = new User();
 
-            foreach (User user in users)
-            {
-                user.Show();
-                Console.WriteLine();
-            }
+            //user1.Registration(users);
+            //users.Add(user1);
 
-            List<Cart_Item> shopping_cart = new List<Cart_Item>();
-            Cart_Item.AddToShoppingCart(books, shopping_cart);
+            //foreach (User user in users)
+            //{
+            //    user.Show();
+            //    Console.WriteLine();
+            //}
+
+            Shopping_Cart shopping_cart = new Shopping_Cart();
+            shopping_cart.AddToShoppingCart(storage);
 
             Console.WriteLine("\nShopping cart:");
-            foreach (Cart_Item b in shopping_cart)
-            {
-                b.Show();
-                Console.WriteLine();
-            }
-            Cart_Item.Calculate_total_price(shopping_cart);
+            shopping_cart.Show();
+            shopping_cart.Calculate_total_price();
 
-            Cart_Item.DeleteShoppingCart(shopping_cart);
-            Cart_Item.ReduceCountShoppingCart(shopping_cart);
+            shopping_cart.DeleteShoppingCart();
+            shopping_cart.ReduceCountShoppingCart();
 
             List<Place> place = new List<Place>();
-            Cart_Item.Buy(users, place, shopping_cart, books);
+            shopping_cart.Buy(/*users, place, */storage);
 
             Console.WriteLine("\nAll books:\n");
-            foreach (Book b in books)
-            {
-                b.Show();
-                Console.WriteLine();
-            }
+            storage.Show();
         }
     }
 }

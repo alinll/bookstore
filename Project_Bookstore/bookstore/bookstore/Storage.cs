@@ -8,13 +8,13 @@ namespace bookstore
 {
     internal class Storage : Book
     {
-        public List<Book> books { get; set; }
+        public List<Book> Books { get; set; }
         public Storage() { 
-            this.books = new List<Book>(); 
+            this.Books = new List<Book>(); 
         }
         public Storage (string id, string name, double price, string author_first_name, string author_last_name, string category,
             int count) : base (id, name, price, author_first_name, author_last_name, category, count) {
-            this.books = new List<Book>();
+            this.Books = new List<Book>();
         }
 
         public void AddBook(Book book)
@@ -22,7 +22,7 @@ namespace bookstore
 
             bool bookExists = false;
 
-            foreach (Book b in books)
+            foreach (Book b in Books)
             {
                 if (b.Id == book.Id)
                 {
@@ -33,13 +33,13 @@ namespace bookstore
             }
             if (!bookExists)
             {
-                books.Add(book);
+                Books.Add(book);
             }
         }
 
         public Book Search_by_Name(string searchName)
         {
-            foreach (Book book in books)
+            foreach (Book book in Books)
             {
                 if (string.Equals(book.Name, searchName, StringComparison.OrdinalIgnoreCase))
                 {
@@ -52,7 +52,7 @@ namespace bookstore
         public Storage Search_by_Author(string searchLastName)
         {
             Storage books_by_Author = new Storage();
-            foreach (Book book in books)
+            foreach (Book book in Books)
             {
                 if (book.Author_Last_Name.Equals(searchLastName, StringComparison.OrdinalIgnoreCase))
                 {
@@ -72,9 +72,9 @@ namespace bookstore
                     choice = Console.ReadLine();
                     if (choice.ToUpper() == "I")
                     {
-                        books.Sort();
+                        Books.Sort();
                         Console.WriteLine("Books sorted by increasing price:\n");
-                        foreach (Book book in books)
+                        foreach (Book book in Books)
                         {
                             book.Show();
                             Console.WriteLine();
@@ -82,10 +82,10 @@ namespace bookstore
                     }
                     else if (choice.ToUpper() == "D")
                     {
-                        books.Sort();
-                        books.Reverse();
+                        Books.Sort();
+                        Books.Reverse();
                         Console.WriteLine("Books sorted by decreasing price:\n");
-                        foreach (Book book in books)
+                        foreach (Book book in Books)
                         {
                             book.Show();
                             Console.WriteLine();
@@ -107,7 +107,7 @@ namespace bookstore
         public void ShowCategory()
         {
             List<string> showedCategories = new List<string>();
-            foreach (Book book in books)
+            foreach (Book book in Books)
             {
                 if (book is Book categoriesBook && !showedCategories.Contains(categoriesBook.Category))
                 {
@@ -121,7 +121,7 @@ namespace bookstore
         {
             Storage selectedBook = new Storage();
 
-            foreach (Book book in books)
+            foreach (Book book in Books)
             {
                 if (book is Book categoriesBook && string.Equals(categoriesBook.Category, searchCategory,
                     StringComparison.OrdinalIgnoreCase))
@@ -146,7 +146,7 @@ namespace bookstore
 
         public override void Show()
         {
-            foreach(Book b in books)
+            foreach(Book b in Books)
             {
                 b.Show();
                 Console.WriteLine();
