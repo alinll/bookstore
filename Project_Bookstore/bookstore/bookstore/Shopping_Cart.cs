@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Reflection.Metadata.BlobBuilder;
-
-namespace bookstore
+﻿namespace bookstore
 {
     internal class Shopping_Cart : Cart_Item
     {
@@ -221,7 +214,7 @@ namespace bookstore
             }
             else
             {
-                Console.WriteLine("Your shipping cart is empty");
+                Console.WriteLine("Your shopping cart is empty");
             }
         }
 
@@ -234,7 +227,13 @@ namespace bookstore
                     throw new Exception("Your shopping cart is empty");
                 }
 
-                users.EnterAccount();
+                User user = new User();
+                bool isAccountEntered = users.EnterAccount(user);
+
+                if(!isAccountEntered)
+                {
+                    throw new Exception("You must be registered to buy something");
+                }
 
                 Place place = new Place();
                 places.EnterPlace(place);
@@ -273,10 +272,61 @@ namespace bookstore
 
         public void ShowCheck(Storage boughtBooks)
         {
-            Console.WriteLine("-----------------------------");
-            Console.WriteLine("\nCheck");
+            Console.WriteLine("\n-----------------------------");
+            Console.WriteLine("Check");
             Console.WriteLine(DateTime.Now);
             boughtBooks.Show();
+        }
+
+        public void MenuShopping_Cart()
+        {
+            Console.WriteLine("\nChoose action:\n1 - add to shopping cart\n2 - see shopping cart\n" +
+                "3 - delete book from shopping cart\n4 - reduce count of book in shopping cart\n0 - exit");
+        }
+
+        public void ChoiceShopping_Cart(Storage storage)
+        {
+            MenuShopping_Cart();
+
+            int function;
+            try
+            {
+                do
+                {
+                    function = int.Parse(Console.ReadLine());
+                    switch (function)
+                    {
+                        case 1:
+                            AddToShoppingCart(storage);
+                            MenuShopping_Cart();
+                            break;
+                        case 2:
+                            Console.WriteLine("\nShopping cart:");
+                            Show();
+                            Calculate_total_price();
+                            MenuShopping_Cart();
+                            break;
+                        case 3:
+                            DeleteShoppingCart();
+                            MenuShopping_Cart();
+                            break;
+                        case 4:
+                            ReduceCountShoppingCart();
+                            MenuShopping_Cart();
+                            break;
+                        case 0:
+                            break;
+                        default:
+                            Console.WriteLine("You enter incorrect choice");
+                            MenuStorage();
+                            break;
+                    }
+                } while (function != 0);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         public override void Show()

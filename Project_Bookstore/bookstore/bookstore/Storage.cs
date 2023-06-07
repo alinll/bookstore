@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace bookstore
+﻿namespace bookstore
 {
     internal class Storage : Book
     {
@@ -141,6 +135,95 @@ namespace bookstore
             else
             {
                 Console.WriteLine("We haven't books in this category(");
+            }
+        }
+
+        public void MenuStorage()
+        {
+            Console.WriteLine("\nChoose action:\n1 - sort books\n2 - search book by name\n3 - search book by author\n" +
+                "4 - see categories\n5 - search by category\n0 - exit");
+        }
+
+        public void ChoiceStorage()
+        {
+            Console.WriteLine("\nAll books:\n");
+            Show();
+
+            MenuStorage();
+
+            int function;
+            try
+            {
+                do
+                {
+                    function = int.Parse(Console.ReadLine());
+                    switch (function)
+                    {
+                        case 1:
+                            string choice = "Y";
+                            ChoiceSort(choice);
+                            MenuStorage();
+                            break;
+                        case 2:
+                            Console.Write("Enter name for searching a book: ");
+                            string searchName = Console.ReadLine();
+                            Book nameSearching = Search_by_Name(searchName);
+
+                            if (nameSearching != null)
+                            {
+                                Console.WriteLine($"Name of the book: {nameSearching.Name}\nAuthor: {nameSearching.Author_First_Name} " +
+                                    $"{nameSearching.Author_Last_Name}\nPrice: {nameSearching.Price}");
+                            }
+                            else
+                            {
+                                Console.WriteLine("We haven't this book(");
+                            }
+                            MenuStorage();
+                            break;
+                        case 3:
+                            Console.Write("\nEnter last name of the author for searching a book: ");
+                            string searchLastName = Console.ReadLine();
+
+                            Storage books_by_Author = Search_by_Author(searchLastName);
+
+                            Console.WriteLine();
+                            if (books_by_Author.Count >= 0)
+                            {
+                                books_by_Author.Show();
+
+                                Console.WriteLine("Do you want to sort this list? Enter Y or N:");
+                                choice = Console.ReadLine();
+                                books_by_Author.ChoiceSort(choice);
+                            }
+                            else
+                            {
+                                Console.WriteLine("We haven't books from this author(");
+                            }
+                            MenuStorage();
+                            break;
+                        case 4:
+                            Console.WriteLine("\nCategories of books:\n");
+                            ShowCategory();
+                            MenuStorage();
+                            break;
+                        case 5:
+                            Console.Write("Enter category for searching: ");
+                            string searchCategory = Console.ReadLine();
+                            ChooseCategory(searchCategory);
+                            MenuStorage();
+                            break;
+                        case 0:
+                            break;
+                        default:
+                            Console.WriteLine("You enter incorrect choice");
+                            MenuStorage();
+                            break;
+                    }
+                } while (function != 0);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 

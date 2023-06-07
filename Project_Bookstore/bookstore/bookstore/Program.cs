@@ -1,8 +1,4 @@
-﻿using System.IO;
-using System.Reflection.Metadata;
-using System.Runtime.InteropServices;
-
-namespace bookstore
+﻿namespace bookstore
 {
     internal class Program
     {
@@ -32,76 +28,55 @@ namespace bookstore
             newBook = new Book("IM-00114320", "Pet Sematary", 326, "Stephen", "King", "Fiction", 10);
             storage.AddBook(newBook);
 
-            Console.WriteLine("All books:\n");
-            storage.Show();
-
-            Console.WriteLine("Do you want to sort this list? Enter Y or N:");
-            string choice = Console.ReadLine();
-            storage.ChoiceSort(choice);
-
-
-            Console.Write("Enter name for searching a book: ");
-            string searchName = Console.ReadLine();
-            Book nameSearching = storage.Search_by_Name(searchName);
-
-            if (nameSearching != null)
-            {
-                Console.WriteLine($"Name of the book: {nameSearching.Name}\nAuthor: {nameSearching.Author_First_Name} " +
-                    $"{nameSearching.Author_Last_Name}\nPrice: {nameSearching.Price}");
-            }
-            else
-            {
-                Console.WriteLine("We haven't this book(");
-            }
-
-            Console.Write("\nEnter last name of the author for searching a book: ");
-            string searchLastName = Console.ReadLine();
-
-            Storage books_by_Author = storage.Search_by_Author(searchLastName);
-
-            Console.WriteLine();
-            if (books_by_Author.Count >= 0)
-            {
-                books_by_Author.Show();
-
-                Console.WriteLine("Do you want to sort this list? Enter Y or N:");
-                choice = Console.ReadLine();
-                books_by_Author.ChoiceSort(choice);
-            }
-            else
-            {
-                Console.WriteLine("We haven't books from this author(");
-            }
-
-            Console.WriteLine("\nCategories of books:\n");
-            storage.ShowCategory();
-
-            Console.Write("Enter category for searching: ");
-            string searchCategory = Console.ReadLine();
-
-            storage.ChooseCategory(searchCategory);
-
             Registered_Users users = new Registered_Users();
             User user = new User();
 
-            users.Registration(user);
-
             Shopping_Cart shopping_cart = new Shopping_Cart();
-            shopping_cart.AddToShoppingCart(storage);
-
-            Console.WriteLine("\nShopping cart:");
-            shopping_cart.Show();
-            shopping_cart.Calculate_total_price();
-
-            shopping_cart.DeleteShoppingCart();
-            shopping_cart.ReduceCountShoppingCart();
-
             Place places = new Place();
 
-            shopping_cart.Buy(storage, users, places);
+            void Show()
+            {
+                Console.WriteLine("\nChoose action:\n1 - all books\n2 - registration\n3 - shopping cart\n4 - buy books\n0 - exit");
+            }
 
-            Console.WriteLine("\nAll books:\n");
-            storage.Show();
+            Show();
+            int function;
+            try
+            {
+                do
+                {
+                    function = int.Parse(Console.ReadLine());
+                    switch (function)
+                    {
+                        case 1:
+                            storage.ChoiceStorage();
+                            Show();
+                            break;
+                        case 2:
+                            users.Registration(user);
+                            Show();
+                            break;
+                        case 3:
+                            shopping_cart.ChoiceShopping_Cart(storage);
+                            Show();
+                            break;
+                        case 4:
+                            shopping_cart.Buy(storage, users, places);
+                            Show();
+                            break;
+                        case 0:
+                            break;
+                        default:
+                            Console.WriteLine("You enter incorrect choice");
+                            Show();
+                            break;
+                    }
+                } while (function != 0);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

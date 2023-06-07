@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using static System.Reflection.Metadata.BlobBuilder;
+﻿using System.Text.RegularExpressions;
 
 namespace bookstore
 {
@@ -61,7 +55,8 @@ namespace bookstore
 
                     if (User.Any(user => user.Phone_number.Equals(Phone_number, StringComparison.OrdinalIgnoreCase)))
                     {
-                        throw new Exception("This phone number already registered");
+                        Console.WriteLine("This phone number already registered");
+                        return;
                     }
 
                     regex = new Regex(@"^(?:\+380|0)\d{9}$");
@@ -87,7 +82,8 @@ namespace bookstore
 
                     if (User.Any(user => user.Email.Equals(Email, StringComparison.OrdinalIgnoreCase)))
                     {
-                        throw new Exception("This email already registered");
+                        Console.WriteLine("This email already registered");
+                        return;
                     }
 
                     regex = new Regex(@"^.+@+[a-z]{2,}\.[a-z]{2,}(\.[a-z]{2,})?$");
@@ -125,13 +121,13 @@ namespace bookstore
             } while (!isValid);
         }
 
-        public void EnterAccount()
+        public bool EnterAccount(User user)
         {
             bool isValid = false;
             User logged = null;
-            do
+            try
             {
-                try
+                do
                 {
                     Console.Write("\nEnter your Email: ");
                     string email = Console.ReadLine();
@@ -140,16 +136,17 @@ namespace bookstore
 
                     if (logged == null)
                     {
-                        throw new Exception("This email don't registered");
+                        throw new Exception("This email doesn't registered. To buy something you must be registered");
                     }
 
                     isValid = true;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            } while (!isValid);
+                } while (!isValid);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
 
             isValid = false;
             do
@@ -161,7 +158,7 @@ namespace bookstore
 
                     if (logged.Password != password)
                     {
-                        throw new Exception("This password don't match");
+                        throw new Exception("This password doesn't match");
                     }
 
                     Console.WriteLine("\nNow you can buy something");
@@ -172,6 +169,8 @@ namespace bookstore
                     Console.WriteLine(ex.Message);
                 }
             } while (!isValid);
+
+            return true;
         }
 
         public override void Show()
