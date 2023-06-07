@@ -81,17 +81,10 @@ namespace bookstore
 
             storage.ChooseCategory(searchCategory);
 
-            //List<User> users = new List<User>();
-            //User user1 = new User();
+            Registered_Users users = new Registered_Users();
+            User user = new User();
 
-            //user1.Registration(users);
-            //users.Add(user1);
-
-            //foreach (User user in users)
-            //{
-            //    user.Show();
-            //    Console.WriteLine();
-            //}
+            users.Registration(user);
 
             Shopping_Cart shopping_cart = new Shopping_Cart();
             shopping_cart.AddToShoppingCart(storage);
@@ -103,9 +96,9 @@ namespace bookstore
             shopping_cart.DeleteShoppingCart();
             shopping_cart.ReduceCountShoppingCart();
 
-            //List<Place> place = new List<Place>();
+            Place places = new Place();
 
-            shopping_cart.Buy(storage);
+            shopping_cart.Buy(storage, users, places);
 
             Console.WriteLine("\nAll books:\n");
             storage.Show();

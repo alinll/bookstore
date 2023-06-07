@@ -8,12 +8,17 @@ using System.Threading.Tasks;
 
 namespace bookstore
 {
-    public class Place
+    internal class Place
     {
         public string Region { get; set; }
         public string City { get; set; }
         public int Department { get; set; }
+        public List<Place> Places { get; set; }
 
+        public Place() {
+            this.Places = new List<Place>();
+
+        }
         public Place(string region, string city, int department)
         {
             this.Region = region;
@@ -21,7 +26,7 @@ namespace bookstore
             this.Department = department;
         }
 
-        public static void EnterPlace(List<Place> place)
+        public void EnterPlace(Place place)
         {
             bool isValid = false;
             Regex regex = null;
@@ -30,9 +35,9 @@ namespace bookstore
                 try
                 {
                     Console.Write("Enter a region: ");
-                    string region = Console.ReadLine();
+                    Region = Console.ReadLine();
                     regex = new Regex(@"^[A-Z][a-zA-Z\-]*[a-z]+$");
-                    isValid = regex.IsMatch(region);
+                    isValid = regex.IsMatch(Region);
 
                     if (!isValid)
                     {
@@ -51,9 +56,9 @@ namespace bookstore
                 try
                 {
                     Console.Write("Enter a city: ");
-                    string city = Console.ReadLine();
+                    City = Console.ReadLine();
                     regex = new Regex(@"^[A-Z][a-zA-Z\-]*[a-z]+$");
-                    isValid = regex.IsMatch(city);
+                    isValid = regex.IsMatch(City);
 
                     if (!isValid)
                     {
@@ -72,20 +77,30 @@ namespace bookstore
                 try
                 {
                     Console.Write("Enter a department: ");
-                    int department = int.Parse(Console.ReadLine());
+                    Department = int.Parse(Console.ReadLine());
                     
-                    if(department <= 0)
+                    if(Department <= 0)
                     {
                         throw new Exception("You enter incorrect department. Enter again");
                     }
 
                     isValid = true;
+                    place = new Place(Region, City, Department);
+                    Places.Add(place);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
             } while (!isValid);
+        }
+
+        public void Show()
+        {
+            foreach (Place p in Places)
+            {
+                Console.WriteLine($"Region: {p.Region}\nCity: {p.City}\nDepartment: {p.Department}");
+            }
         }
     }
 }

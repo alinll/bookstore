@@ -25,7 +25,7 @@ namespace bookstore
 
         public void AddToShoppingCart(Storage storage)
         {
-            Console.Write("Enter name of book, which you want to buy: ");
+            Console.Write("\nEnter name of book, which you want to buy: ");
             string item = Console.ReadLine();
 
             Book selectedBook = storage.Books.FirstOrDefault(b => b.Name.Equals(item, StringComparison.OrdinalIgnoreCase));
@@ -225,7 +225,7 @@ namespace bookstore
             }
         }
 
-        public void Buy(Storage storage)
+        public void Buy(Storage storage, Registered_Users users, Place places)
         {
             try
             {
@@ -234,8 +234,10 @@ namespace bookstore
                     throw new Exception("Your shopping cart is empty");
                 }
 
-                //User.EnterAccount(users);
-                //Place.EnterPlace(place);
+                users.EnterAccount();
+
+                Place place = new Place();
+                places.EnterPlace(place);
 
                 foreach (Cart_Item item in Cart_Item)
                 {
@@ -248,13 +250,18 @@ namespace bookstore
 
                 Storage boughtBooks = new Storage();
 
-                foreach(Cart_Item b in Cart_Item)
+                foreach (Cart_Item b in Cart_Item)
                 {
                     boughtBooks.AddBook(b);
                 }
 
                 ShowCheck(boughtBooks);
                 Calculate_total_price();
+                Console.WriteLine("\nBuyer:");
+                users.Show();
+                Console.WriteLine("Address:");
+                places.Show();
+                Console.WriteLine("-----------------------------");
 
                 Cart_Item.Clear();
             }
@@ -266,6 +273,7 @@ namespace bookstore
 
         public void ShowCheck(Storage boughtBooks)
         {
+            Console.WriteLine("-----------------------------");
             Console.WriteLine("\nCheck");
             Console.WriteLine(DateTime.Now);
             boughtBooks.Show();
