@@ -1,4 +1,6 @@
-﻿namespace bookstore
+﻿using System.Text.Json;
+
+namespace bookstore
 {
     internal class Shopping_Cart : Cart_Item
     {
@@ -21,6 +23,7 @@
             Console.Write("\nEnter name of book, which you want to buy: ");
             string item = Console.ReadLine();
 
+            
             Book selectedBook = storage.Books.FirstOrDefault(b => b.Name.Equals(item, StringComparison.OrdinalIgnoreCase));
 
             if (selectedBook != null)
@@ -49,6 +52,7 @@
                                         selectedBook.Price, selectedBook.Author_First_Name, selectedBook.Author_Last_Name,
                                         selectedBook.Category, selectedBook.Count, quantity);
                                     Cart_Item.Add(cartItem);
+                                    File.WriteAllText("shopping_cart.json", JsonSerializer.Serialize(Cart_Item));
                                 }
                                 isValid = true;
                             }
@@ -107,6 +111,7 @@
                                                 selectedBook.Price, selectedBook.Author_First_Name, selectedBook.Author_Last_Name,
                                                 selectedBook.Category, selectedBook.Count, quantity);
                                             Cart_Item.Add(cartItem);
+                                            File.WriteAllText("shopping_cart.json", JsonSerializer.Serialize(Cart_Item));
                                         }
                                         isValid = true;
                                     }
@@ -247,15 +252,16 @@
                     }
                 }
 
-                Storage boughtBooks = new Storage();
+                File.WriteAllText("books.json", JsonSerializer.Serialize(storage.Books));
+
+                List<Book> boughtBooks = new List<Book>();
 
                 foreach (Cart_Item b in Cart_Item)
                 {
-                    boughtBooks.AddBook(b);
+                    boughtBooks.Add(b);
                 }
 
                 ShowCheck(boughtBooks);
-                Calculate_total_price();
                 Console.WriteLine("\nBuyer:");
                 users.Show();
                 Console.WriteLine("Address:");
@@ -270,12 +276,18 @@
             }
         }
 
-        public void ShowCheck(Storage boughtBooks)
+        public void ShowCheck(List<Book> boughtBooks)
         {
             Console.WriteLine("\n-----------------------------");
             Console.WriteLine("Check");
             Console.WriteLine(DateTime.Now);
-            boughtBooks.Show();
+
+            foreach(Book b in boughtBooks)
+            {
+                b.Show();
+            }
+
+            Calculate_total_price();
         }
 
         public void MenuShopping_Cart()

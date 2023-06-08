@@ -1,4 +1,6 @@
-﻿namespace bookstore
+﻿using System.Text.Json;
+
+namespace bookstore
 {
     internal class Storage : Book
     {
@@ -10,6 +12,8 @@
             int count) : base (id, name, price, author_first_name, author_last_name, category, count) {
             this.Books = new List<Book>();
         }
+
+        string jsonReader = File.ReadAllText("books.json");
 
         public void AddBook(Book book)
         {
@@ -29,31 +33,8 @@
             {
                 Books.Add(book);
             }
-        }
 
-        public Book Search_by_Name(string searchName)
-        {
-            foreach (Book book in Books)
-            {
-                if (string.Equals(book.Name, searchName, StringComparison.OrdinalIgnoreCase))
-                {
-                    return book;
-                }
-            }
-            return null;
-        }
-
-        public Storage Search_by_Author(string searchLastName)
-        {
-            Storage books_by_Author = new Storage();
-            foreach (Book book in Books)
-            {
-                if (book.Author_Last_Name.Equals(searchLastName, StringComparison.OrdinalIgnoreCase))
-                {
-                    books_by_Author.AddBook(book);
-                }
-            }
-            return books_by_Author;
+            File.WriteAllText("books.json", JsonSerializer.Serialize(Books));
         }
 
         public Book ChoiceSort(string choice)
@@ -64,11 +45,12 @@
                 {
                     Console.WriteLine("You want to sort by increasing or decreasing? Enter I or D:");
                     choice = Console.ReadLine();
+                    List<Book>? booksJson = JsonSerializer.Deserialize<List<Book>>(jsonReader);
                     if (choice.ToUpper() == "I")
                     {
-                        Books.Sort();
+                        booksJson.Sort();
                         Console.WriteLine("Books sorted by increasing price:\n");
-                        foreach (Book book in Books)
+                        foreach (Book book in booksJson)
                         {
                             book.Show();
                             Console.WriteLine();
@@ -76,10 +58,98 @@
                     }
                     else if (choice.ToUpper() == "D")
                     {
-                        Books.Sort();
-                        Books.Reverse();
+                        booksJson.Sort();
+                        booksJson.Reverse();
                         Console.WriteLine("Books sorted by decreasing price:\n");
-                        foreach (Book book in Books)
+                        foreach (Book book in booksJson)
+                        {
+                            book.Show();
+                            Console.WriteLine();
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("You entered incorrect choice!");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            return null;
+        }
+
+        public Book Search_by_Name(string searchName)
+        {
+            List<Book>? booksJson = JsonSerializer.Deserialize<List<Book>>(jsonReader);
+            foreach (Book book in booksJson)
+            {
+                if (string.Equals(book.Name, searchName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return book;
+                }
+            }
+            return null;
+        }
+
+        public List<Book> Search_by_Author(string searchLastName)
+        {
+            List<Book>? booksJson = JsonSerializer.Deserialize<List<Book>>(jsonReader);
+            List<Book> books_by_Author = new List<Book>();
+            foreach (Book book in booksJson)
+            {
+                if (book.Author_Last_Name.Equals(searchLastName, StringComparison.OrdinalIgnoreCase))
+                {
+                    books_by_Author.Add(book);
+                }
+            }
+
+            if (books_by_Author != null)
+            {
+                foreach (Book b in books_by_Author)
+                {
+                    b.Show();
+                    Console.WriteLine();
+                }
+
+                Console.WriteLine("Do you want to sort this books? Y or N");
+                string choice = Console.ReadLine();
+                SortSelected(choice, books_by_Author);
+            }
+            else
+            {
+                Console.WriteLine("We haven't books from this author(");
+            }
+
+            return books_by_Author;
+        }
+
+        public Book SortSelected(string choice, List<Book> selected)
+        {
+            if (choice.ToUpper() == "Y")
+            {
+                try
+                {
+                    Console.WriteLine("You want to sort by increasing or decreasing? Enter I or D:");
+                    choice = Console.ReadLine();
+                    List<Book>? booksJson = JsonSerializer.Deserialize<List<Book>>(jsonReader);
+                    if (choice.ToUpper() == "I")
+                    {
+                        selected.Sort();
+                        Console.WriteLine("Books sorted by increasing price:\n");
+                        foreach (Book book in selected)
+                        {
+                            book.Show();
+                            Console.WriteLine();
+                        }
+                    }
+                    else if (choice.ToUpper() == "D")
+                    {
+                        selected.Sort();
+                        selected.Reverse();
+                        Console.WriteLine("Books sorted by decreasing price:\n");
+                        foreach (Book book in selected)
                         {
                             book.Show();
                             Console.WriteLine();
@@ -101,7 +171,8 @@
         public void ShowCategory()
         {
             List<string> showedCategories = new List<string>();
-            foreach (Book book in Books)
+            List<Book>? booksJson = JsonSerializer.Deserialize<List<Book>>(jsonReader);
+            foreach (Book book in booksJson)
             {
                 if (book is Book categoriesBook && !showedCategories.Contains(categoriesBook.Category))
                 {
@@ -113,24 +184,28 @@
 
         public void ChooseCategory(string searchCategory)
         {
-            Storage selectedBook = new Storage();
-
-            foreach (Book book in Books)
+            List<Book> selectedBook = new List<Book>();
+            List<Book>? booksJson = JsonSerializer.Deserialize<List<Book>>(jsonReader);
+            foreach (Book book in booksJson)
             {
                 if (book is Book categoriesBook && string.Equals(categoriesBook.Category, searchCategory,
                     StringComparison.OrdinalIgnoreCase))
                 {
-                    selectedBook.AddBook(book);
+                    selectedBook.Add(book);
                 }
             }
 
             if (selectedBook.Count >= 0)
             {
-                selectedBook.Show();
+                foreach(Book b in selectedBook)
+                {
+                    b.Show();
+                    Console.WriteLine();
+                }
 
                 Console.WriteLine("Do you want to sort this books? Y or N");
                 string choice = Console.ReadLine();
-                selectedBook.ChoiceSort(choice);
+                SortSelected(choice, selectedBook);
             }
             else
             {
@@ -184,21 +259,7 @@
                             Console.Write("\nEnter last name of the author for searching a book: ");
                             string searchLastName = Console.ReadLine();
 
-                            Storage books_by_Author = Search_by_Author(searchLastName);
-
-                            Console.WriteLine();
-                            if (books_by_Author.Count >= 0)
-                            {
-                                books_by_Author.Show();
-
-                                Console.WriteLine("Do you want to sort this list? Enter Y or N:");
-                                choice = Console.ReadLine();
-                                books_by_Author.ChoiceSort(choice);
-                            }
-                            else
-                            {
-                                Console.WriteLine("We haven't books from this author(");
-                            }
+                            List<Book> books_by_Author = Search_by_Author(searchLastName);
                             MenuStorage();
                             break;
                         case 4:
@@ -229,7 +290,9 @@
 
         public override void Show()
         {
-            foreach(Book b in Books)
+            string content = File.ReadAllText("books.json");
+            List<Book>? booksJson = JsonSerializer.Deserialize<List<Book>>(content);
+            foreach (Book b in booksJson)
             {
                 b.Show();
                 Console.WriteLine();
