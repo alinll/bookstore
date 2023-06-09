@@ -1,20 +1,20 @@
 ﻿namespace bookstore
 {
-    internal class Cart_Item : Storage
+    internal class Cart_Item
     {
+        public Book Book { get; set; }
         public int Quantity { get; set; }
 
-        public Cart_Item() { }
-        public Cart_Item(string id, string name, double price, string author_first_name, string author_last_name, 
-            string category, int count, int quantity) : base(id, name, price, author_first_name, author_last_name, category, count)
+        public Cart_Item(Book Book, int quantity)
         {
             this.Quantity = quantity;
+            this.Book = Book;
         }
 
-        public override void Show()
+        public void Show()
         {
-            Console.WriteLine($"Name of the book: {Name}\nAuthor: {Author_First_Name} {Author_Last_Name}\nPrice: {Price}\n" +
-                $"Quantity: {Quantity}");
+            Console.WriteLine($"Name of the book: {Book.Name}\nAuthor: {Book.Author_First_Name} {Book.Author_Last_Name}\n" +
+                $"Category: {Book.Category}\nPrice: {Book.Price}\nQuantity: {Quantity}");
         }
     }
 }

@@ -2,18 +2,11 @@
 
 namespace bookstore
 {
-    internal class Shopping_Cart : Cart_Item
+    internal class Shopping_Cart
     {
         public List<Cart_Item> Cart_Item { get; set; }
 
-        public Shopping_Cart()
-        {
-            this.Cart_Item = new List<Cart_Item>();
-        }
-
-        public Shopping_Cart(string id, string name, double price, string author_first_name, string author_last_name,
-            string category, int count, int quantity) : base(id, name, price, author_first_name, author_last_name, category, count,
-                quantity)
+        public Shopping_Cart() 
         {
             this.Cart_Item = new List<Cart_Item>();
         }
@@ -23,12 +16,12 @@ namespace bookstore
             Console.Write("\nEnter name of book, which you want to buy: ");
             string item = Console.ReadLine();
 
-            
+
             Book selectedBook = storage.Books.FirstOrDefault(b => b.Name.Equals(item, StringComparison.OrdinalIgnoreCase));
 
             if (selectedBook != null)
             {
-                Cart_Item existingCartItem = Cart_Item.FirstOrDefault(b => b.Name.Equals(item,
+                Cart_Item existingCartItem = Cart_Item.FirstOrDefault(b => b.Book.Name.Equals(item,
                             StringComparison.OrdinalIgnoreCase));
                 int availableQuantity = selectedBook.Count - (existingCartItem?.Quantity ?? 0);
                 if (availableQuantity > 0)
@@ -48,9 +41,7 @@ namespace bookstore
                                 }
                                 else
                                 {
-                                    Cart_Item cartItem = new Cart_Item(selectedBook.Id, selectedBook.Name,
-                                        selectedBook.Price, selectedBook.Author_First_Name, selectedBook.Author_Last_Name,
-                                        selectedBook.Category, selectedBook.Count, quantity);
+                                    Cart_Item cartItem = new Cart_Item(selectedBook, quantity);
                                     Cart_Item.Add(cartItem);
                                     File.WriteAllText("shopping_cart.json", JsonSerializer.Serialize(Cart_Item));
                                 }
@@ -87,7 +78,7 @@ namespace bookstore
 
                     if (selectedBook != null)
                     {
-                        Cart_Item existingCartItem = Cart_Item.FirstOrDefault(b => b.Name.Equals(item,
+                        Cart_Item existingCartItem = Cart_Item.FirstOrDefault(b => b.Book.Name.Equals(item,
                                     StringComparison.OrdinalIgnoreCase));
                         int availableQuantity = selectedBook.Count - (existingCartItem?.Quantity ?? 0);
                         if (availableQuantity > 0)
@@ -107,9 +98,7 @@ namespace bookstore
                                         }
                                         else
                                         {
-                                            Cart_Item cartItem = new Cart_Item(selectedBook.Id, selectedBook.Name,
-                                                selectedBook.Price, selectedBook.Author_First_Name, selectedBook.Author_Last_Name,
-                                                selectedBook.Category, selectedBook.Count, quantity);
+                                            Cart_Item cartItem = new Cart_Item(selectedBook, quantity);
                                             Cart_Item.Add(cartItem);
                                             File.WriteAllText("shopping_cart.json", JsonSerializer.Serialize(Cart_Item));
                                         }
@@ -140,7 +129,7 @@ namespace bookstore
             double total_price = 0;
             foreach (Cart_Item b in Cart_Item)
             {
-                double priceBook = b.Quantity * b.Price;
+                double priceBook = b.Quantity * b.Book.Price;
                 total_price += priceBook;
             }
             Console.WriteLine($"Total price: {total_price}");
@@ -153,7 +142,7 @@ namespace bookstore
                 Console.Write("\nEnter a name of book, which you want to delete: ");
                 string item = Console.ReadLine();
 
-                Cart_Item selectedBook = Cart_Item.FirstOrDefault(b => b.Name.Equals(item,
+                Cart_Item selectedBook = Cart_Item.FirstOrDefault(b => b.Book.Name.Equals(item,
                     StringComparison.OrdinalIgnoreCase));
 
                 if (selectedBook != null)
@@ -185,7 +174,7 @@ namespace bookstore
                 Console.Write("Enter a name of book, which count you want to reduce: ");
                 string item = Console.ReadLine();
 
-                Cart_Item selectedBook = Cart_Item.FirstOrDefault(b => b.Name.Equals(item, StringComparison.OrdinalIgnoreCase));
+                Cart_Item selectedBook = Cart_Item.FirstOrDefault(b => b.Book.Name.Equals(item, StringComparison.OrdinalIgnoreCase));
 
                 if (selectedBook != null && selectedBook.Quantity > 1)
                 {
@@ -223,7 +212,7 @@ namespace bookstore
             }
         }
 
-        public void Buy(Storage storage, Registered_Users users, Place places)
+        public void Buy(Storage storage, Registered_Users users)
         {
             try
             {
@@ -235,17 +224,17 @@ namespace bookstore
                 User user = new User();
                 bool isAccountEntered = users.EnterAccount(user);
 
-                if(!isAccountEntered)
+                if (!isAccountEntered)
                 {
                     throw new Exception("You must be registered to buy something");
                 }
 
                 Place place = new Place();
-                places.EnterPlace(place);
+                place.EnterPlace();
 
                 foreach (Cart_Item item in Cart_Item)
                 {
-                    Book book = storage.Books.FirstOrDefault(b => b.Id == item.Id);
+                    Book book = storage.Books.FirstOrDefault(b => b.Id == item.Book.Id);
                     if (book != null)
                     {
                         book.Count -= item.Quantity;
@@ -254,18 +243,11 @@ namespace bookstore
 
                 File.WriteAllText("books.json", JsonSerializer.Serialize(storage.Books));
 
-                List<Book> boughtBooks = new List<Book>();
-
-                foreach (Cart_Item b in Cart_Item)
-                {
-                    boughtBooks.Add(b);
-                }
-
-                ShowCheck(boughtBooks);
+                ShowCheck();
                 Console.WriteLine("\nBuyer:");
                 users.Show();
                 Console.WriteLine("Address:");
-                places.Show();
+                place.Show();
                 Console.WriteLine("-----------------------------");
 
                 Cart_Item.Clear();
@@ -276,17 +258,13 @@ namespace bookstore
             }
         }
 
-        public void ShowCheck(List<Book> boughtBooks)
+        public void ShowCheck()
         {
             Console.WriteLine("\n-----------------------------");
             Console.WriteLine("Check");
             Console.WriteLine(DateTime.Now);
 
-            foreach(Book b in boughtBooks)
-            {
-                b.Show();
-            }
-
+            Show();
             Calculate_total_price();
         }
 
@@ -330,7 +308,7 @@ namespace bookstore
                             break;
                         default:
                             Console.WriteLine("You enter incorrect choice");
-                            MenuStorage();
+                            MenuShopping_Cart();
                             break;
                     }
                 } while (function != 0);
@@ -341,7 +319,7 @@ namespace bookstore
             }
         }
 
-        public override void Show()
+        public void Show()
         {
             foreach (Cart_Item b in Cart_Item)
             {

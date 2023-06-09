@@ -61,7 +61,7 @@
                             Show();
                             break;
                         case 4:
-                            shopping_cart.Buy(storage, users, places);
+                            shopping_cart.Buy(storage, users);
                             Show();
                             break;
                         case 0:

@@ -1,20 +1,18 @@
-﻿using System.Text.Json;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace bookstore
 {
-    internal class Registered_Users : User
+    internal class Registered_Users 
     {
-        public List<User> User { get; set; }
+        public List<User> Users { get; set; }
 
         public Registered_Users()
         {
-            this.User = new List<User>();
+            this.Users = new List<User>();
         }
-        public Registered_Users(string name, string phone_number, string email, string password) : base(name, phone_number, 
-            email, password)
+        public Registered_Users(string name, string phone_number, string email, string password) 
         {
-            this.User = new List<User>();
+            this.Users = new List<User>();
         }
 
         public void Registration(User user)
@@ -26,9 +24,9 @@ namespace bookstore
                 try
                 {
                     Console.Write("\nEnter your name: ");
-                    Name = Console.ReadLine();
+                    user.Name = Console.ReadLine();
                     regex = new Regex(@"^[A-Z][a-z]{2,}$");
-                    isValid = regex.IsMatch(Name);
+                    isValid = regex.IsMatch(user.Name);
 
                     if (!isValid)
                     {
@@ -47,21 +45,21 @@ namespace bookstore
                 try
                 {
                     Console.Write("Enter your phone number: ");
-                    Phone_number = Console.ReadLine();
+                    user.Phone_number = Console.ReadLine();
 
-                    if (Phone_number.StartsWith("0"))
+                    if (user.Phone_number.StartsWith("0"))
                     {
-                        Phone_number = "+38" + Phone_number;
+                        user.Phone_number = "+38" + user.Phone_number;
                     }
 
-                    if (User.Any(user => user.Phone_number.Equals(Phone_number, StringComparison.OrdinalIgnoreCase)))
+                    if (Users.Any(user => user.Phone_number.Equals(user.Phone_number, StringComparison.OrdinalIgnoreCase)))
                     {
                         Console.WriteLine("This phone number already registered");
                         return;
                     }
 
                     regex = new Regex(@"^(?:\+380|0)\d{9}$");
-                    isValid = regex.IsMatch(Phone_number);
+                    isValid = regex.IsMatch(user.Phone_number);
                     if (!isValid)
                     {
                         throw new Exception("You enter incorrect phone number. Enter again:");
@@ -79,16 +77,16 @@ namespace bookstore
                 try
                 {
                     Console.Write("Enter your Email: ");
-                    Email = Console.ReadLine();
+                    user.Email = Console.ReadLine();
 
-                    if (User.Any(user => user.Email.Equals(Email, StringComparison.OrdinalIgnoreCase)))
+                    if (Users.Any(user => user.Email.Equals(user.Email, StringComparison.OrdinalIgnoreCase)))
                     {
                         Console.WriteLine("This email already registered");
                         return;
                     }
 
                     regex = new Regex(@"^.+@+[a-z]{2,}\.[a-z]{2,}(\.[a-z]{2,})?$");
-                    isValid = regex.IsMatch(Email);
+                    isValid = regex.IsMatch(user.Email);
                     if (!isValid)
                     {
                         throw new Exception("You enter incorrect Email. Enter again:");
@@ -106,14 +104,14 @@ namespace bookstore
                 try
                 {
                     Console.Write("Enter your password: ");
-                    Password = Console.ReadLine();
-                    if (Password.Length < 6)
+                    user.Password = Console.ReadLine();
+                    if (user.Password.Length < 6)
                     {
                         throw new Exception("Password must have least 6 symbols. Enter again:");
                     }
                     isValid = true;
-                    user = new User(Name, Phone_number, Email, Password);
-                    User.Add(user);
+                    user = new User(user.Name, user.Phone_number, user.Email, user.Password);
+                    Users.Add(user);
                 }
                 catch (Exception ex)
                 {
@@ -133,7 +131,7 @@ namespace bookstore
                     Console.Write("\nEnter your Email: ");
                     string email = Console.ReadLine();
 
-                    logged = User.FirstOrDefault(u => u.Email == email);
+                    logged = Users.FirstOrDefault(u => u.Email == email);
 
                     if (logged == null)
                     {
@@ -175,9 +173,9 @@ namespace bookstore
             return true;
         }
 
-        public override void Show()
+        public void Show()
         {
-            foreach (User u in User)
+            foreach (User u in Users)
             {
                 u.Show();
                 Console.WriteLine();

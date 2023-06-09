@@ -29,7 +29,7 @@
             return Price.CompareTo(other.Price);
         }
 
-        public virtual void Show()
+        public void Show()
         {
             Console.WriteLine($"Name of the book: {Name}\nAuthor: {Author_First_Name} {Author_Last_Name}\nCategory: {Category}\n" +
                 $"Price: {Price}\nCount: {Count}");

@@ -1,19 +1,15 @@
-﻿using System.Text.Json;
+﻿using System.Formats.Asn1;
+using System.Text.Json;
 
 namespace bookstore
 {
-    internal class Storage : Book
+    internal class Storage 
     {
         public List<Book> Books { get; set; }
+        string jsonReader = File.ReadAllText("books.json");
         public Storage() { 
-            this.Books = new List<Book>(); 
-        }
-        public Storage (string id, string name, double price, string author_first_name, string author_last_name, string category,
-            int count) : base (id, name, price, author_first_name, author_last_name, category, count) {
             this.Books = new List<Book>();
         }
-
-        string jsonReader = File.ReadAllText("books.json");
 
         public void AddBook(Book book)
         {
@@ -37,7 +33,7 @@ namespace bookstore
             File.WriteAllText("books.json", JsonSerializer.Serialize(Books));
         }
 
-        public Book ChoiceSort(string choice)
+        public void ChoiceSort(string choice, List<Book> selected)
         {
             if (choice.ToUpper() == "Y")
             {
@@ -45,12 +41,13 @@ namespace bookstore
                 {
                     Console.WriteLine("You want to sort by increasing or decreasing? Enter I or D:");
                     choice = Console.ReadLine();
+
                     List<Book>? booksJson = JsonSerializer.Deserialize<List<Book>>(jsonReader);
                     if (choice.ToUpper() == "I")
                     {
-                        booksJson.Sort();
+                        selected.Sort();
                         Console.WriteLine("Books sorted by increasing price:\n");
-                        foreach (Book book in booksJson)
+                        foreach (Book book in selected)
                         {
                             book.Show();
                             Console.WriteLine();
@@ -58,10 +55,10 @@ namespace bookstore
                     }
                     else if (choice.ToUpper() == "D")
                     {
-                        booksJson.Sort();
-                        booksJson.Reverse();
+                        selected.Sort();
+                        selected.Reverse();
                         Console.WriteLine("Books sorted by decreasing price:\n");
-                        foreach (Book book in booksJson)
+                        foreach (Book book in selected)
                         {
                             book.Show();
                             Console.WriteLine();
@@ -77,7 +74,6 @@ namespace bookstore
                     Console.WriteLine(ex.Message);
                 }
             }
-            return null;
         }
 
         public Book Search_by_Name(string searchName)
@@ -115,7 +111,7 @@ namespace bookstore
 
                 Console.WriteLine("Do you want to sort this books? Y or N");
                 string choice = Console.ReadLine();
-                SortSelected(choice, books_by_Author);
+                ChoiceSort(choice, books_by_Author);
             }
             else
             {
@@ -123,49 +119,6 @@ namespace bookstore
             }
 
             return books_by_Author;
-        }
-
-        public Book SortSelected(string choice, List<Book> selected)
-        {
-            if (choice.ToUpper() == "Y")
-            {
-                try
-                {
-                    Console.WriteLine("You want to sort by increasing or decreasing? Enter I or D:");
-                    choice = Console.ReadLine();
-                    List<Book>? booksJson = JsonSerializer.Deserialize<List<Book>>(jsonReader);
-                    if (choice.ToUpper() == "I")
-                    {
-                        selected.Sort();
-                        Console.WriteLine("Books sorted by increasing price:\n");
-                        foreach (Book book in selected)
-                        {
-                            book.Show();
-                            Console.WriteLine();
-                        }
-                    }
-                    else if (choice.ToUpper() == "D")
-                    {
-                        selected.Sort();
-                        selected.Reverse();
-                        Console.WriteLine("Books sorted by decreasing price:\n");
-                        foreach (Book book in selected)
-                        {
-                            book.Show();
-                            Console.WriteLine();
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception("You entered incorrect choice!");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-            return null;
         }
 
         public void ShowCategory()
@@ -205,7 +158,7 @@ namespace bookstore
 
                 Console.WriteLine("Do you want to sort this books? Y or N");
                 string choice = Console.ReadLine();
-                SortSelected(choice, selectedBook);
+                ChoiceSort(choice, selectedBook);
             }
             else
             {
@@ -236,7 +189,7 @@ namespace bookstore
                     {
                         case 1:
                             string choice = "Y";
-                            ChoiceSort(choice);
+                            ChoiceSort(choice, Books);
                             MenuStorage();
                             break;
                         case 2:
@@ -288,7 +241,7 @@ namespace bookstore
             }
         }
 
-        public override void Show()
+        public void Show()
         {
             string content = File.ReadAllText("books.json");
             List<Book>? booksJson = JsonSerializer.Deserialize<List<Book>>(content);

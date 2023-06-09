@@ -7,12 +7,8 @@ namespace bookstore
         public string Region { get; set; }
         public string City { get; set; }
         public int Department { get; set; }
-        public List<Place> Places { get; set; }
 
-        public Place() {
-            this.Places = new List<Place>();
-
-        }
+        public Place() { }
         public Place(string region, string city, int department)
         {
             this.Region = region;
@@ -20,7 +16,7 @@ namespace bookstore
             this.Department = department;
         }
 
-        public void EnterPlace(Place place)
+        public Place EnterPlace()
         {
             bool isValid = false;
             Regex regex = null;
@@ -79,22 +75,21 @@ namespace bookstore
                     }
 
                     isValid = true;
-                    place = new Place(Region, City, Department);
-                    Places.Add(place);
+                    Place place = new Place(Region, City, Department);
+                    return place;
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
             } while (!isValid);
+
+            return null;
         }
 
         public void Show()
         {
-            foreach (Place p in Places)
-            {
-                Console.WriteLine($"Region: {p.Region}\nCity: {p.City}\nDepartment: {p.Department}");
-            }
+            Console.WriteLine($"Region: {Region}\nCity: {City}\nDepartment: {Department}");
         }
     }
 }
