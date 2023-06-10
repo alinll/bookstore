@@ -184,11 +184,7 @@ namespace bookstore
                         File.WriteAllText("shopping_cart.json", JsonSerializer.Serialize(cart_itemJson));
 
                         Console.WriteLine("\nShopping cart:");
-                        foreach (Cart_Item b in cart_itemJson)
-                        {
-                            b.Show();
-                            Console.WriteLine();
-                        }
+                        Show();
                     }
                     else
                     {
@@ -225,11 +221,7 @@ namespace bookstore
 
                         File.WriteAllText("shopping_cart.json", JsonSerializer.Serialize(cart_itemJson));
                         Console.WriteLine("\nShopping cart:");
-                        foreach (Cart_Item b in cart_itemJson)
-                        {
-                            b.Show();
-                            Console.WriteLine();
-                        }
+                        Show();
                     }
                     else if (selectedBook != null && selectedBook.Quantity == 1)
                     {
@@ -237,11 +229,7 @@ namespace bookstore
 
                         File.WriteAllText("shopping_cart.json", JsonSerializer.Serialize(cart_itemJson));
                         Console.WriteLine("\nShopping cart:");
-                        foreach (Cart_Item b in cart_itemJson)
-                        {
-                            b.Show();
-                            Console.WriteLine();
-                        }
+                        Show();
                     }
                     else
                     {
