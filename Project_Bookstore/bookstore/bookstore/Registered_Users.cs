@@ -146,7 +146,7 @@ namespace bookstore
             } while (!isValid);
         }
 
-        public bool EnterAccount(User user)
+        public bool EnterAccount()
         {
             try
             {

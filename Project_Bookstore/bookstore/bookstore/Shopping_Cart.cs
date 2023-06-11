@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Xml.Linq;
 
 namespace bookstore
 {
@@ -258,39 +259,41 @@ namespace bookstore
                 {
                     cart_itemJson = JsonSerializer.Deserialize<List<Cart_Item>>(jsonReader);
 
-                    User user = new User();
-                    bool isAccountEntered = users.EnterAccount(user);
-
-                    if (!isAccountEntered)
+                    if (cart_itemJson.Count() > 0)
                     {
-                        throw new Exception("You must be registered to buy something");
-                    }
+                        User user = new User();
+                        bool isAccountEntered = users.EnterAccount();
 
-                    Place place = new Place();
-                    place.EnterPlace();
-
-                    foreach (Cart_Item item in cart_itemJson)
-                    {
-                        Book book = storage.Books.FirstOrDefault(b => b.Id == item.Book.Id);
-                        if (book != null)
+                        if (!isAccountEntered)
                         {
-                            book.Count -= item.Quantity;
+                            throw new Exception("You must be registered to buy something");
                         }
+
+                        Place place = new Place();
+                        place.EnterPlace();
+
+                        foreach (Cart_Item item in cart_itemJson)
+                        {
+                            Book book = storage.Books.FirstOrDefault(b => b.Id == item.Book.Id);
+                            if (book != null)
+                            {
+                                book.Count -= item.Quantity;
+                            }
+                        }
+
+                        File.WriteAllText("books.json", JsonSerializer.Serialize(storage.Books,
+                            new JsonSerializerOptions() { WriteIndented = true }));
+
+                        ShowCheck();
+
+                        cart_itemJson.Clear();
+                        File.WriteAllText("shopping_cart.json", JsonSerializer.Serialize(cart_itemJson,
+                            new JsonSerializerOptions() { WriteIndented = true }));
                     }
-
-                    File.WriteAllText("books.json", JsonSerializer.Serialize(storage.Books,
-                        new JsonSerializerOptions() { WriteIndented = true }));
-
-                    ShowCheck();
-                    Console.WriteLine("\nBuyer:");
-                    users.Show();
-                    Console.WriteLine("Address:");
-                    place.Show();
-                    Console.WriteLine("-----------------------------");
-
-                    cart_itemJson.Clear();
-                    File.WriteAllText("shopping_cart.json", JsonSerializer.Serialize(cart_itemJson,
-                        new JsonSerializerOptions() { WriteIndented = true }));
+                    else
+                    {
+                        throw new Exception("Your shopping cart is empty");
+                    }
                 }
                 else
                 {
@@ -308,8 +311,8 @@ namespace bookstore
             Console.WriteLine("\n-----------------------------");
             Console.WriteLine("Check");
             Console.WriteLine(DateTime.Now);
-
             Show();
+            Console.WriteLine("-----------------------------");
         }
 
         public void MenuShopping_Cart()
