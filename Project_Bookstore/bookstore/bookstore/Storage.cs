@@ -29,7 +29,7 @@ namespace bookstore
                 Books.Add(book);
             }
 
-            File.WriteAllText("books.json", JsonSerializer.Serialize(Books));
+            File.WriteAllText("books.json", JsonSerializer.Serialize(Books, new JsonSerializerOptions() { WriteIndented = true }));
         }
 
         public void ChoiceSort(string choice, List<Book> selected)

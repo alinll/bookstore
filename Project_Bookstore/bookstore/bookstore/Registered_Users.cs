@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Formats.Asn1;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace bookstore
 {
@@ -17,6 +19,22 @@ namespace bookstore
 
         public void Registration(User user)
         {
+            string jsonReader = File.ReadAllText("users.json");
+            List<User>? userJson;
+            if (!string.IsNullOrEmpty(jsonReader))
+            {
+                userJson = JsonSerializer.Deserialize<List<User>>(jsonReader);
+
+                foreach (User u in userJson)
+                {
+                    Users.Add(u);
+                }
+            }
+            else
+            {
+                userJson = new List<User>();
+            }
+
             Regex regex = null;
             bool isValid = false;
             do
@@ -52,7 +70,9 @@ namespace bookstore
                         user.Phone_number = "+38" + user.Phone_number;
                     }
 
-                    if (Users.Any(user => user.Phone_number.Equals(user.Phone_number, StringComparison.OrdinalIgnoreCase)))
+                    var existingPhone_number = userJson.FirstOrDefault(u => u.Phone_number.Equals(user.Phone_number, 
+                        StringComparison.OrdinalIgnoreCase));
+                    if (existingPhone_number != null)
                     {
                         Console.WriteLine("This phone number already registered");
                         return;
@@ -79,17 +99,21 @@ namespace bookstore
                     Console.Write("Enter your Email: ");
                     user.Email = Console.ReadLine();
 
-                    if (Users.Any(user => user.Email.Equals(user.Email, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        Console.WriteLine("This email already registered");
-                        return;
-                    }
 
                     regex = new Regex(@"^.+@+[a-z]{2,}\.[a-z]{2,}(\.[a-z]{2,})?$");
                     isValid = regex.IsMatch(user.Email);
                     if (!isValid)
                     {
                         throw new Exception("You enter incorrect Email. Enter again:");
+                    }
+
+
+                    var existingEmail = userJson.FirstOrDefault(u => u.Email.Equals(user.Email,
+                        StringComparison.OrdinalIgnoreCase));
+                    if (existingEmail != null)
+                    {
+                        Console.WriteLine("This email already registered");
+                        return;
                     }
                 }
                 catch (Exception ex)
@@ -111,7 +135,9 @@ namespace bookstore
                     }
                     isValid = true;
                     user = new User(user.Name, user.Phone_number, user.Email, user.Password);
-                    Users.Add(user);
+                    userJson.Add(user);
+                    File.WriteAllText("users.json", JsonSerializer.Serialize(userJson, 
+                        new JsonSerializerOptions() { WriteIndented = true }));
                 }
                 catch (Exception ex)
                 {
@@ -122,62 +148,92 @@ namespace bookstore
 
         public bool EnterAccount(User user)
         {
-            bool isValid = false;
-            User logged = null;
             try
             {
-                do
+                string jsonReader = File.ReadAllText("users.json");
+                List<User>? userJson;
+                if (!string.IsNullOrEmpty(jsonReader))
                 {
-                    Console.Write("\nEnter your Email: ");
-                    string email = Console.ReadLine();
+                    userJson = JsonSerializer.Deserialize<List<User>>(jsonReader);
 
-                    logged = Users.FirstOrDefault(u => u.Email == email);
-
-                    if (logged == null)
+                    bool isValid = false;
+                    User logged = null;
+                    try
                     {
-                        throw new Exception("This email doesn't registered. To buy something you must be registered");
+                        do
+                        {
+                            Console.Write("\nEnter your Email: ");
+                            string email = Console.ReadLine();
+
+                            logged = userJson.FirstOrDefault(u => u.Email == email);
+
+                            if (logged == null)
+                            {
+                                throw new Exception("This email doesn't registered. To buy something you must be registered");
+                            }
+
+                            isValid = true;
+                        } while (!isValid);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        return false;
                     }
 
-                    isValid = true;
-                } while (!isValid);
+                    isValid = false;
+                    do
+                    {
+                        try
+                        {
+                            Console.Write("Enter your password: ");
+                            string password = Console.ReadLine();
+
+                            if (logged.Password != password)
+                            {
+                                throw new Exception("This password doesn't match");
+                            }
+
+                            Console.WriteLine("\nNow you can buy something");
+                            isValid = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            return false;
+                        }
+                    } while (!isValid);
+
+                    return true;
+                }
+                else
+                {
+                    throw new Exception("You don't registered");
+                }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return false;
             }
-
-            isValid = false;
-            do
-            {
-                try
-                {
-                    Console.Write("Enter your password: ");
-                    string password = Console.ReadLine();
-
-                    if (logged.Password != password)
-                    {
-                        throw new Exception("This password doesn't match");
-                    }
-
-                    Console.WriteLine("\nNow you can buy something");
-                    isValid = true;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    return false;
-                }
-            } while (!isValid);
-
-            return true;
         }
 
         public void Show()
         {
-            foreach (User u in Users)
+            string jsonReader = File.ReadAllText("users.json");
+            List<User>? userJson;
+            if (!string.IsNullOrEmpty(jsonReader))
             {
-                u.Show();
+                userJson = JsonSerializer.Deserialize<List<User>>(jsonReader);
+
+                foreach (User u in userJson)
+                {
+                    u.Show();
+                    Console.WriteLine();
+                }
+            }
+            else
+            {
                 Console.WriteLine();
             }
         }
